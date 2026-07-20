@@ -1,0 +1,18 @@
+{
+  "name": "mdorf-agent-skills",
+  "owner": {
+    "name": "mdorf",
+    "email": "mdorf@stanford.edu"
+  },
+  "metadata": {
+    "description": "Portable Agent Skills (SKILL.md) for Claude Code, OpenAI Codex, and other AI coding agents",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "agent-skills",
+      "source": "./",
+      "description": "Collection of portable agent skills, cross-compatible with Claude Code and OpenAI Codex"
+    }
+  ]
+}
