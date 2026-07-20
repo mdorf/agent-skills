@@ -3,15 +3,24 @@
 # Claude Code (~/.claude/skills) and OpenAI Codex (~/.agents/skills).
 #
 # Usage:
-#   ./install.sh <skill-name>     install one skill
-#   ./install.sh --all            install every skill under skills/
-#   ./install.sh --list           list available skills
+#   ./install.sh [--claude|--codex] <skill-name>   install one skill
+#   ./install.sh [--claude|--codex] --all          install every skill under skills/
+#   ./install.sh --list                            list available skills
+#
+# By default skills are linked for both tools. Use --claude or --codex to
+# target one (e.g. if Claude Code already gets the skills via the plugin
+# marketplace, use --codex to avoid duplicates).
 
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$REPO_DIR/skills"
 TARGETS=("$HOME/.claude/skills" "$HOME/.agents/skills")
+
+case "${1:-}" in
+  --claude) TARGETS=("$HOME/.claude/skills"); shift ;;
+  --codex)  TARGETS=("$HOME/.agents/skills"); shift ;;
+esac
 
 list_skills() {
   find "$SKILLS_SRC" -mindepth 2 -maxdepth 2 -name SKILL.md -exec dirname {} \; | xargs -n1 basename | sort
