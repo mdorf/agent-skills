@@ -13,17 +13,22 @@ Agents are good at implementing improvements and bad at proving them. A performa
 ```
 /before-and-after
 ```
-Bare invocation, right after the agent implemented the change in the same session. The agent works out the rest.
+Bare invocation, right after the agent implemented the change in the same session. The agent infers the evidence type from what the change claims: metrics for a performance fix, screenshot pairs for a UI change, both for a change that claims both.
 
 ```
 /before-and-after my API runs on localhost:9393 against our staging triple store
 ```
-Environment hints skip the discovery questions.
+Environment hints skip the discovery questions (a performance change here).
+
+```
+/before-and-after the app runs via bin/dev on localhost:3000, capture desktop and mobile
+```
+The same, for a UI or design change: the agent renders both revisions and screenshots them at identical viewports, here desktop plus mobile.
 
 ```
 /before-and-after PR #309
 ```
-Post-hoc: capture evidence for a change that already lives in a PR or branch.
+Post-hoc: capture evidence for a change that already lives in a PR or branch, including one authored by someone else.
 
 ## What the agent does
 
