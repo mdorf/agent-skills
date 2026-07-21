@@ -58,6 +58,8 @@ A change can make more than one claim; capture evidence for each claim the PR ma
 - Accompany screenshots with a comparison table: one row per changed aspect, Before behavior vs After behavior in words.
 - Correctness guard: the pairs should differ ONLY in the claimed changes; an unexplained difference means investigate before publishing.
 - Include manual verification steps a reviewer can follow.
+- Capture mechanism: use whatever is available: built-in browser tooling, a headless capture script (Playwright/Puppeteer, or the repo's own system-test harness, e.g. Capybara with headless Chromium). Prefer a script committed to the repo; it doubles as the Reproduce artifact.
+- Having no way to capture screenshots is not a dead end and must not block the PR: set up both revisions so capturing is trivial, then hand the user exact capture instructions (URLs for both revisions, viewport size, the states to capture) in the consolidated ask, or open the PR with the pairs marked pending and those instructions included. The inability to screenshot never justifies presenting a words-only description as evidence.
 
 ## Report: the PR Before/After section
 
@@ -81,6 +83,8 @@ Reproduce: <script path or command>
 ```
 
 For visual claims, title the section `## Before / After`; the Method line states viewport, browser, and page/data/state used for both captures; the table becomes one row per changed aspect (Before behavior vs After behavior); embed the labeled screenshot pairs; `Reproduce:` becomes the manual verification steps.
+
+PR bodies can only reference hosted images: commit the screenshots to the branch (e.g. a `docs/screenshots/` folder, removable before merge) and link them by relative URL, or give the user the labeled image files plus a paste-ready section to drag-and-drop into the PR description.
 
 Report ALL results, including null and negative ones. An honest "no measurable impact" is a valid, useful outcome. If only part of the evidence was capturable, label each item with how it was obtained and mark the rest as pending; never blend captured and inferred evidence.
 
