@@ -1,15 +1,15 @@
 ---
 name: before-and-after
-description: Use when a code change is meant to improve performance (fewer SPARQL/SQL queries, fewer backend or triple-store round trips, batching, caching, lower latency) and no measured evidence exists yet, when the user asks to instrument before/after performance metrics for a fix, branch, or PR, or when about to open a PR whose central claim is a performance improvement.
+description: Use when a code change is meant to produce an observable improvement and no captured evidence exists yet: performance work (fewer SPARQL/SQL queries, fewer backend or triple-store round trips, batching, caching, lower latency), visual or UI changes (layout, styling, CSS, UX behavior), or any change whose effect can be demonstrated. Also use when the user asks to instrument before/after evidence (metrics or screenshots) for a fix, branch, or PR, or when about to open a PR whose central claim is an improvement.
 ---
 
 # Before and After
 
 ## Overview
 
-A performance change is not complete when the code works; it is complete when the improvement is **measured**. This skill produces empirical before/after evidence and puts it in the PR.
+A change whose purpose is an observable improvement is not complete when the code works; it is complete when the improvement is **captured**. This skill produces before/after evidence from both revisions and puts it in the PR.
 
-Core principle: **never claim, estimate, or extrapolate a number. Every figure in the report comes from a measurement that was actually run.** If measurement is blocked, say so explicitly in the PR instead of silently omitting the section.
+Core principle: **never fabricate evidence. Every number comes from a measurement that was actually run; every screenshot comes from rendering the actual code at the stated revision.** If capturing evidence is blocked, say so explicitly in the PR instead of silently omitting it.
 
 Invocation arguments are optional hints that pre-answer discovery: an environment description ("API on localhost:9393 against staging"), or a target ("PR #309", a branch name). Anything not supplied is discovered; anything not discoverable is asked.
 
@@ -17,7 +17,7 @@ Invocation arguments are optional hints that pre-answer discovery: an environmen
 
 - **After** = the change: current branch/working tree, or the PR/branch/commit named in the arguments.
 - **Before** = the merge-base of the change with the main branch (`git merge-base HEAD origin/main`), NOT main's HEAD, which may contain unrelated commits.
-- When invoked after the change is already implemented (the common case), use `git worktree add` or stash/checkout to run identical measurements on both revisions.
+- When invoked after the change is already implemented (the common case), use `git worktree add` or stash/checkout to run identical captures on both revisions.
 
 ## Establish the environment
 
@@ -26,33 +26,42 @@ Discover before asking; ask before assuming; never fabricate.
 1. **Discover** how the project runs: AGENTS.md / CLAUDE.md first (a previous run may have recorded the answer), then README, docker-compose, .env*, config files, Procfile, package/Rake/Make scripts.
 2. **Verify liveness**: probe the actual ports/health endpoints. Configured ≠ running.
 3. **Start it** if down and a documented, safe way exists.
-4. **Ask for the residue** in ONE consolidated list: endpoints, credentials, representative test data/requests, how to trigger the changed code path. Not piecemeal questions.
+4. **Ask for the residue** in ONE consolidated list: endpoints, credentials, representative test data/requests/pages, how to trigger the changed code path. Not piecemeal questions.
 
 **Always ask before generating repeated load against shared infrastructure** (staging databases, triple stores, search indexes used by a team), even when everything else was discoverable.
 
-## Design the measurement
+## Choose the evidence to match the claim
 
-Two classes of metric; work metrics take priority because they are deterministic:
+| The change claims | Evidence to capture |
+|---|---|
+| Less work (fewer queries, fewer round trips, smaller payloads) | Work metrics: exact counts via query logs, counters, instrumentation. Often measurable with no live backend at all (a stubbed client or test fixtures can count what the code *generates*) |
+| Faster | Latency (median / p95 / mean in ms) under the performance protocol below |
+| Looks or behaves better in the UI | Paired screenshots of both revisions under the visual protocol below, plus a behavior comparison table |
+| Other observable effects (memory, bundle size, accessibility audit scores) | Same pattern: one instrument, both revisions, identical conditions |
 
-| Class | Examples | Notes |
-|---|---|---|
-| Work | # of queries executed, backend round trips, generated query bytes, cache hits | Environment-independent; count exactly via query logs, counters, instrumentation. Often measurable with no live backend at all (a stubbed client or test fixtures can count the queries the code *generates*), so these may be obtainable even when latency measurement is blocked |
-| Time | median / p95 / mean latency in ms | Environment-dependent; requires the protocol below |
+A change can make more than one claim; capture evidence for each claim the PR makes.
 
-Latency protocol:
+## Performance protocol
 
 - Identical inputs for both revisions (same requests, same data).
 - ≥5 warmup requests per revision before measuring.
 - **Alternate measured requests between revisions** (A,B,A,B,…) rather than all-A-then-all-B; alternation cancels environmental drift (cache warming, shared-server load). ≥30 measured requests per revision.
 - Report absolute values AND percent delta: `454.1 ms → 236.9 ms (−47.8%)`. Percentages alone are not acceptable.
+- Correctness guard: capture and diff the actual responses of both revisions for the measured inputs. A speedup on different answers is a bug, not an improvement.
+- Keep the measurement runnable: a script, committed to the repo or pasted in the PR.
 
-Correctness guard: capture and diff the actual responses/outputs of both revisions for the measured inputs. A speedup on different answers is a bug, not an improvement.
+## Visual protocol
 
-Keep the measurement runnable: a script, committed to the repo or pasted in the PR, so anyone can reproduce the numbers.
+- Both screenshots come from **running code**: Before rendered from the merge-base worktree, After from the change. A design mockup, a Figma export, or a written description is not an After.
+- Identical capture conditions: same viewport size, same browser, same page, same navigation state, same data. State them in the PR.
+- Capture one labeled Before/After pair per changed aspect (e.g., page top, scrolled state, the specific component), not a single catch-all pair.
+- Accompany screenshots with a comparison table: one row per changed aspect, Before behavior vs After behavior in words.
+- Correctness guard: the pairs should differ ONLY in the claimed changes; an unexplained difference means investigate before publishing.
+- Include manual verification steps a reviewer can follow.
 
-## Report: the PR Performance section
+## Report: the PR Before/After section
 
-Append to the PR description (or post as a PR comment if the description cannot be edited):
+Append to the PR description (or post as a PR comment if the description cannot be edited). For performance claims:
 
 ```markdown
 ## Performance
@@ -65,25 +74,28 @@ Append to the PR description (or post as a PR comment if the description cannot 
 |---|---|---|---|
 | Queries per request | 9 | 3 | −67% |
 | Median latency | 454.1 ms | 236.9 ms | −47.8% |
-| p95 latency | 645.0 ms | 298.7 ms | −53.7% |
 
 <one honest sentence of interpretation>
 
 Reproduce: <script path or command>
 ```
 
-Report ALL results, including null and negative ones ("generated query size shrank 8% but end-to-end latency was unchanged"). An honest "no measurable impact" is a valid, useful outcome. If only part of the measurement was possible (e.g., work metrics but not latency), label each number with how it was obtained and mark the rest as pending; never blend measured and inferred figures.
+For visual claims, title the section `## Before / After`; the Method line states viewport, browser, and page/data/state used for both captures; the table becomes one row per changed aspect (Before behavior vs After behavior); embed the labeled screenshot pairs; `Reproduce:` becomes the manual verification steps.
+
+Report ALL results, including null and negative ones. An honest "no measurable impact" is a valid, useful outcome. If only part of the evidence was capturable, label each item with how it was obtained and mark the rest as pending; never blend captured and inferred evidence.
 
 ## Afterwards
 
-Offer (do not do silently) to record what was learned in the project's AGENTS.md / CLAUDE.md: how to start the environment, endpoints, which infrastructure is benchmark-safe, where the measurement script lives. The next invocation in this repo then runs without questions.
+Offer (do not do silently) to record what was learned in the project's AGENTS.md / CLAUDE.md: how to start the environment, endpoints, which infrastructure is benchmark-safe, where the capture script lives. The next invocation in this repo then runs without questions.
 
 ## Red flags: stop if you catch yourself thinking
 
 | Thought | Reality |
 |---|---|
-| "The improvement is obvious from the code" | Obvious improvements have shipped regressions. Measure. |
-| "I'll estimate the query reduction" | An estimate presented in a Performance section is fabrication. Run it, or ask for what you need. |
-| "The environment isn't available, so skip the metrics" | Don't skip silently: measure what needs no environment (work metrics), ask about the rest, or state in the PR that measurement is pending and why. |
-| "Tests pass, that's evidence enough" | Tests prove correctness, not performance. |
+| "The improvement is obvious from the code" | Obvious improvements have shipped regressions. Capture it. |
+| "I'll estimate the query reduction" | An estimate presented as evidence is fabrication. Run it, or ask for what you need. |
+| "I'll describe the visual change; reviewers can picture it" | A description is a claim. Screenshot pairs from both revisions are evidence. |
+| "The design mockup shows the after state" | A mockup is intent, not outcome. The After screenshot comes from the code as it will merge. |
+| "The environment isn't available, so skip the evidence" | Don't skip silently: capture what needs no environment (work metrics), ask about the rest, or state in the PR that evidence is pending and why. |
+| "Tests pass, that's evidence enough" | Tests prove correctness, not the claimed improvement. |
 | "I'll benchmark against staging without asking" | Shared infra + repeated load needs explicit permission first. |
