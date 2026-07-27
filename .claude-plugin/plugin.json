@@ -1,0 +1,19 @@
+{
+  "name": "agent-skills",
+  "version": "0.2.0",
+  "description": "Portable Agent Skills (SKILL.md) for Claude Code, OpenAI Codex, and other AI coding agents",
+  "author": {
+    "name": "Michael Dorf"
+  },
+  "homepage": "https://github.com/mdorf/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "before-and-after",
+    "performance",
+    "benchmarking",
+    "ui-evidence",
+    "ticket-resolution",
+    "codex"
+  ]
+}

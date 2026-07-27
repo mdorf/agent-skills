@@ -62,6 +62,10 @@ agent-skills/
 └── install.sh             # symlink installer for user-level use in both tools
 ```
 
+## Releasing changes
+
+When publishing a change, bump `version` in both `.claude-plugin/plugin.json` and the plugin entry of `.claude-plugin/marketplace.json` (keep them identical). Claude Code identifies installed plugin builds by this version; without it, the git commit hash is used, which leaks into skill names and accumulates stale cache directories.
+
 ## Compatibility notes
 
 - `SKILL.md` frontmatter sticks to the shared fields of the open standard (`name`, `description`) so skills stay portable.
