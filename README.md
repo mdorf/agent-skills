@@ -10,6 +10,7 @@ Each skill is a self-contained folder under [`skills/`](skills/) with a `SKILL.m
 |---|---|
 | [before-and-after](skills/before-and-after/) | Captures before/after evidence for a code change (query counts, latency, UI screenshot pairs) under identical conditions and adds it to the PR |
 | [solve](skills/solve/) | Resolves an issue/ticket with discipline: validates the premise against current code, weighs the proposed fix against alternatives, and stops for review before writing the fix |
+| [step-back](skills/step-back/) | Grounding discipline: verify a suggestion's mechanism before voicing it, treat negative search results as unproven, establish scope before remedy, and stop the tweak-upon-tweak loop after failed fixes |
 
 ## Installation
 
