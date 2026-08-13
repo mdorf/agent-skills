@@ -11,7 +11,7 @@ Each skill is a self-contained folder under [`skills/`](skills/) with a `SKILL.m
 | [before-and-after](skills/before-and-after/) | Captures before/after evidence for a code change (query counts, latency, UI screenshot pairs) under identical conditions and adds it to the PR |
 | [solve](skills/solve/) | Resolves an issue/ticket with discipline: validates the premise against current code, weighs the proposed fix against alternatives, and stops for review before writing the fix |
 | [step-back](skills/step-back/) | Grounding discipline: verify a suggestion's mechanism before voicing it, treat negative search results as unproven, establish scope before remedy, and stop the tweak-upon-tweak loop after failed fixes |
-| [brevity](skills/brevity/) | Replies that land: answer first, length proportional to the question, plain register, asks never buried, and no substance lost to shortening |
+| [brevity](skills/brevity/) | Replies that land: answer first, length proportional to what the reply must accomplish, plain register, asks never buried, and no substance lost to shortening |
 
 ## Installation
 
@@ -57,10 +57,13 @@ agent-skills/
 ├── skills/                # canonical source of truth, one folder per skill
 │   └── <skill-name>/
 │       ├── SKILL.md       # portable: works in Claude Code and Codex as-is
+│       ├── README.md      # human-facing: the problem, usage, evidence
+│       ├── TESTING.md     # scenarios, pass criteria, recorded results
 │       ├── references/    # optional supporting docs (loaded on demand)
 │       └── scripts/       # optional helper scripts
 ├── .claude-plugin/
-│   └── marketplace.json   # Claude Code plugin marketplace manifest (ignored by Codex)
+│   ├── plugin.json        # plugin manifest; bump version here on release
+│   └── marketplace.json   # marketplace manifest (ignored by Codex)
 └── install.sh             # symlink installer for user-level use in both tools
 ```
 

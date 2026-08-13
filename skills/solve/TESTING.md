@@ -51,3 +51,7 @@ The proposed fix is deliberately suboptimal for the stated environment (long-liv
 ## Results summary (2026-07-20, initial release)
 
 Scenario 1 confirmed the checkpoint and premise-validation failures (with the fix-on-faith caveat noted above). Scenarios 2 and 3 passed on all criteria with no loopholes found; no SKILL.md changes were required after testing.
+
+## Coverage gap (2026-08-13)
+
+These scenarios predate two later changes to the skill's dependency. `before-and-after` was generalized to visual evidence on 2026-07-21, and on 2026-08-13 its baseline rule changed to handle a change already sitting on the main branch. Phase 5 of `solve` hands off to that skill for performance claims, and no scenario here has exercised the handoff since either change. The cross-reference is unverified rather than known-broken: nothing in Phase 5 depends on how `before-and-after` picks its baseline.

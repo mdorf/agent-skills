@@ -32,7 +32,7 @@ Post-hoc: capture evidence for a change that already lives in a PR or branch, in
 
 ## What the agent does
 
-1. Pins the comparison: **before** = merge-base with main (not main's HEAD), **after** = the change, run from separate worktrees under identical conditions.
+1. Pins the comparison: **before** = merge-base with main (not main's HEAD), **after** = the change, captured from both revisions under identical conditions (via `git worktree add`, or stash/checkout). When the change already sits on the main branch there is no merge-base to use, so before becomes the parent of the change's earliest commit.
 2. Discovers the environment (AGENTS.md/CLAUDE.md, README, docker-compose, .env, scripts), probes whether it's actually running, and starts it if there's a documented way.
 3. Asks you **one consolidated question** for whatever it couldn't discover, and it always asks before running benchmark load against shared infrastructure (staging databases, triple stores).
 4. Matches the evidence to the claim: **work metrics** for "less work" (queries per request, round trips; deterministic, often measurable with no live backend), the **latency protocol** for "faster" (warmups, ≥30 requests per revision, alternated A,B,A,B to cancel drift), and the **visual protocol** for "looks or behaves better" (paired screenshots of both revisions at the same viewport, page, state, and data, plus a behavior comparison table and manual verification steps).
