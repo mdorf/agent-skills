@@ -1,6 +1,6 @@
 # brevity
 
-Makes an AI agent's replies land: answer first, length proportional to the question, plain words, asks never buried.
+Makes an AI agent's replies land: answer first, length proportional to what the reply must accomplish, plain words, asks never buried.
 
 > This README is for humans. The agent-facing specification is [SKILL.md](SKILL.md).
 
