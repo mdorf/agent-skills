@@ -17,6 +17,7 @@ Invocation arguments are optional hints that pre-answer discovery: an environmen
 
 - **After** = the change: current branch/working tree, or the PR/branch/commit named in the arguments.
 - **Before** = the merge-base of the change with the main branch (`git merge-base HEAD origin/main`), NOT main's HEAD, which may contain unrelated commits.
+- **When the change is already on the main branch** (no feature branch, a common pattern in single-author repos), the merge-base IS the change and the comparison is silently empty. Before is then the parent of the change's earliest commit (`<first-sha>^`), so establish which commits constitute the change before measuring and name that range in the report. If the change is still uncommitted, Before is `HEAD`. Verify the two revisions differ before capturing anything; identical revisions produce a clean run and a meaningless result.
 - When invoked after the change is already implemented (the common case), use `git worktree add` or stash/checkout to run identical captures on both revisions.
 
 ## Establish the environment
