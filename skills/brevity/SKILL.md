@@ -1,6 +1,6 @@
 ---
 name: brevity
-description: Use when composing any reply to the user: answers, reviews, status updates, analyses. Especially when a reply risks running long, when it contains a question or offer the user must act on, or when the user complains about verbosity, walls of text, buried questions, or answers they stopped reading.
+description: Use before replying with the results of an investigation, review, or audit; before reporting completed work; before answering a yes/no or single-decision question; when the reply must carry a decision or approval the user has to act on; and when the user complains about verbosity, walls of text, buried questions, or answers they stopped reading.
 ---
 
 # Brevity
@@ -10,7 +10,7 @@ A correct answer nobody finishes is worth less than a shorter one that lands. Cu
 ## Shape of a reply
 
 1. **First sentence: the answer, the verdict, or the ask.** Not context, not process, not a preview.
-2. **Length proportional to what the reader must do with the reply.** A narrow question gets a few sentences. A requested deliverable (review, plan, document) gets what its content needs, and nothing that doesn't change the reader's decision or action. Per-sentence test: would the reader act differently without it? No: cut.
+2. **Length proportional to what the reader must do with the reply.** A confirmation that work is done gets the outcome, anything that contradicts what was promised, and nothing else. A narrow question gets a few sentences. A requested deliverable (review, plan, document) gets what its content needs, and nothing that doesn't change the reader's decision or action. Per-sentence test: would the reader act differently without it? No: cut.
 3. **Asks go first or stand alone.** Anything needing the user's decision, answer, or approval is the first thing on their screen, or its own one-line paragraph. Never last, never mid-paragraph, never next to other closing content. At most one open question per reply. Never restate an offer as a soft closing aside: ask it plainly or do the thing and say it's done.
 4. **Formatting must earn its place.** Headers, tables, and bold leads only where the reader will navigate by them; a short reply gets none. Structure makes a long reply feel organized, which is exactly how it escapes being shortened.
 
@@ -25,6 +25,7 @@ Plain technical. Short sentences, common words, contractions fine. Precise, not 
 - Summarizing what the reply just said.
 - Hedge stacks ("it's probably worth noting that it may be possible").
 - Ceremony ("Great question", "To be clear", "Honestly,").
+- Narrating verification that passed. Report what failed or surprised; a clean check is just "done".
 
 ## What brevity must never cost
 

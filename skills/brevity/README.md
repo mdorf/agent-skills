@@ -12,21 +12,24 @@ Four related failures, all from real sessions: a one-line question gets seven pa
 
 ## Usage
 
-Meant to be loaded implicitly: the trigger description covers composing any reply. Pair it with two always-on lines in your global CLAUDE.md / AGENTS.md (answer first, asks up front, plain words) so the floor holds even when the skill isn't loaded. Invoke `/brevity` directly when a session has drifted wordy.
+Loaded at discrete moments, not continuously: reporting the results of an investigation or review, reporting completed work, answering a yes/no, carrying a decision the user must act on, or recovering after a verbosity complaint. An earlier version triggered on "composing any reply" and measured zero invocations across 32 turns of real use; a trigger with no decision point never fires. Keep the always-on floor in your global CLAUDE.md / AGENTS.md (answer first, asks up front, plain words); the skill carries the register, the deletion list, and the proportionality ladder, which are worth loading when a reply is about to run long. Invoke `/brevity` directly when a session has drifted wordy.
 
 ## What it encodes
 
 - First sentence is the answer, verdict, or ask.
+- A proportionality ladder: a confirmation gets the outcome and anything that contradicts what was promised; a narrow question gets a few sentences; a requested deliverable gets what its content needs.
 - Per-sentence test: would the reader act differently without it? No: cut.
 - Asks go first or stand alone; one open question per reply.
 - Formatting must earn its place; short replies get none.
 - Plain technical register, with a swap-list for showcase vocabulary.
-- Named deletions: question restatement, previews, self-summaries, hedge stacks, ceremony.
+- Named deletions: question restatement, previews, self-summaries, hedge stacks, ceremony, and narrating verification that passed.
 - Hard floors: substance, candor, ideas, and deliverable completeness are never traded for length.
 
 ## Tested, not just written
 
-Same real question, same available facts: without the skill, ~370 words opening with "Good question to press on..."; with it, ~170 words starting "Only half of that claim was grounded", all three substance points intact, one closing question. The over-correction guard confirmed a full spec review still comes back complete (all seeded defects plus a meeting script), and the placement test put the decision first with exactly one question. Scenarios and criteria in [TESTING.md](TESTING.md).
+Same real question, same available facts: without the skill, ~370 words opening with "Good question to press on..."; with it, ~170 words starting "Only half of that claim was grounded", all three substance points intact, one closing question. The over-correction guard confirmed a full spec review still comes back complete (all seeded defects plus a meeting script), and the placement test put the decision first with exactly one question.
+
+The proportionality ladder and the verification-narration deletion came later, from measuring 32 replies in one real session: the requested deliverables were proportionate, but confirmations ran 250 to 350 words each. Re-running the three behavioral scenarios after that change found no regression, including the one guarding against truncated deliverables. Scenarios and criteria in [TESTING.md](TESTING.md).
 
 ## Install
 
