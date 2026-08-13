@@ -12,7 +12,7 @@ Four related failures, all from real sessions: a one-line question gets seven pa
 
 ## Usage
 
-Loaded at discrete moments, not continuously: reporting the results of an investigation or review, reporting completed work, answering a yes/no, carrying a decision the user must act on, or recovering after a verbosity complaint. An earlier version triggered on "composing any reply" and measured zero invocations across 32 turns of real use; a trigger with no decision point never fires. Keep the always-on floor in your global CLAUDE.md / AGENTS.md (answer first, asks up front, plain words); the skill carries the register, the deletion list, and the proportionality ladder, which are worth loading when a reply is about to run long. Invoke `/brevity` directly when a session has drifted wordy.
+Loaded at discrete moments, not continuously: reporting the results of an investigation or review, reporting completed work, answering a yes/no, carrying a decision the user must act on, or recovering after a verbosity complaint. An earlier version triggered on "composing any reply." Across 32 turns of one real session it fired zero times, including every turn where a reply ran long, though its recorded usage shows it did fire in other sessions. So the failure was unreliability, not silence: a trigger naming something continuous gives the matcher no particular moment to act on, and the moments it most needs to catch are exactly the ones it missed. Pair the skill with an explicit load directive plus the always-on floor in your global CLAUDE.md / AGENTS.md (answer first, asks up front, plain words); the skill carries the register, the deletion list, and the proportionality ladder, which are worth loading when a reply is about to run long. Invoke `/brevity` directly when a session has drifted wordy.
 
 ## What it encodes
 
@@ -29,7 +29,9 @@ Loaded at discrete moments, not continuously: reporting the results of an invest
 
 Same real question, same available facts: without the skill, ~370 words opening with "Good question to press on..."; with it, ~170 words starting "Only half of that claim was grounded", all three substance points intact, one closing question. The over-correction guard confirmed a full spec review still comes back complete (all seeded defects plus a meeting script), and the placement test put the decision first with exactly one question.
 
-The proportionality ladder and the verification-narration deletion came later, from measuring 32 replies in one real session: the requested deliverables were proportionate, but confirmations ran 250 to 350 words each. Re-running the three behavioral scenarios after that change found no regression, including the one guarding against truncated deliverables. Scenarios and criteria in [TESTING.md](TESTING.md).
+The proportionality ladder and the verification-narration deletion came later, from measuring 32 replies in one real session: the requested deliverables were proportionate, but confirmations ran 250 to 350 words each. Re-running the three behavioral scenarios after that change found no regression, including the one guarding against truncated deliverables.
+
+Scenario 5, written to score that change directly, is still RED and pending. It measures a confirmation the agent composes unprompted, so it cannot be scored in the session that authored the fix, and the trigger rewrite cannot be scored by any existing scenario, since all of them hand the skill text to the model rather than waiting for it to load. Treat the proportionality ladder as reasoned and regression-checked, not as verified. Scenarios and criteria in [TESTING.md](TESTING.md).
 
 ## Install
 
