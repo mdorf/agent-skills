@@ -1,6 +1,6 @@
 {
   "name": "ground-rules",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Opt-in always-on companion for the step-back and brevity skills: a SessionStart hook injects their baseline rules into every session, no CLAUDE.md editing required",
   "author": {
     "name": "Michael Dorf"

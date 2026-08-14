@@ -29,15 +29,12 @@ The agent stops, states what is known and what the failed attempts rule out, run
 ```markdown
 # Working discipline
 
-- Verify the mechanism before proposing: read where the value or code path is
-  actually consumed, or run the cheap probe, BEFORE voicing a recommendation.
-  Label unverified ideas as unverified; never present them as recommendations.
-- If two consecutive fixes have failed, stop tweaking: state what is known and
-  ruled out, run the cheapest diagnostic that measures the actual behavior,
-  establish scope ("where does this NOT happen?"), then propose one grounded
-  solution.
-- Load the step-back skill whenever diagnosing, debugging, or proposing
-  config changes.
+- Verify the mechanism (read the consumer, run the probe) before recommending;
+  label unverified ideas as unverified.
+- After two failed fixes, stop: state what's ruled out, run the cheapest
+  diagnostic of the real behavior, ask "where does this NOT happen?", then
+  one grounded proposal.
+- Load the step-back skill when diagnosing, debugging, or changing config.
 ```
 
 Without these lines, treat the skill as manual-only: invoke `/step-back` yourself when you see thrashing.
