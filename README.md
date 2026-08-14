@@ -10,9 +10,11 @@ Each skill is a self-contained folder under [`skills/`](skills/) with a `SKILL.m
 |---|---|
 | [before-and-after](skills/before-and-after/) | Captures before/after evidence for a code change (query counts, latency, UI screenshot pairs) under identical conditions and adds it to the PR |
 | [solve](skills/solve/) | Resolves an issue/ticket with discipline: validates the premise against current code, weighs the proposed fix against alternatives, and stops for review before writing the fix |
-| [step-back](skills/step-back/) | Grounding discipline: verify a suggestion's mechanism before voicing it, treat negative search results as unproven, establish scope before remedy, and stop the tweak-upon-tweak loop after failed fixes |
-| [brevity](skills/brevity/) | Replies that land: answer first, length proportional to what the reply must accomplish, plain register, asks never buried, and no substance lost to shortening |
+| [step-back](skills/step-back/)† | Grounding discipline: verify a suggestion's mechanism before voicing it, treat negative search results as unproven, establish scope before remedy, and stop the tweak-upon-tweak loop after failed fixes |
+| [brevity](skills/brevity/)† | Replies that land: answer first, length proportional to what the reply must accomplish, plain register, asks never buried, and no substance lost to shortening |
 | [respawn](skills/respawn/) | Same-window session handoff: /respawn writes a reviewable handoff stash, /clear resets, and a SessionStart hook injects the stash so the fresh agent resumes in the know |
+
+† Meant to run implicitly, which needs always-on companion rules. Claude Code users: install the [ground-rules](ground-rules/) companion plugin (one command, below). Codex or manual users: paste the snippet from the skill's README into your global CLAUDE.md / AGENTS.md. Without either, these two work as manual commands (/step-back, /brevity) only.
 
 ## Installation
 
@@ -23,6 +25,12 @@ Option A, via the plugin marketplace (recommended):
 ```
 /plugin marketplace add mdorf/agent-skills
 /plugin install agent-skills@mdorf-agent-skills
+```
+
+Optional third command, recommended if you want step-back and brevity active implicitly in every session (see the † note above):
+
+```
+/plugin install ground-rules@mdorf-agent-skills
 ```
 
 Option B, symlink or copy a skill directly:

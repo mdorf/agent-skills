@@ -24,7 +24,7 @@ Two modes:
 
 The agent stops, states what is known and what the failed attempts rule out, runs the cheapest diagnostic that measures the actual behavior, and comes back with one grounded proposal.
 
-**Required companion setup for implicit use:** this skill is meant to run implicitly, and a skill only influences behavior once it loads. The impulsive moment it targets is exactly when an agent won't reach for it, so relying on the trigger description alone leaves it unloaded when it matters most. Paste the following into your always-loaded instructions file (global `~/.claude/CLAUDE.md`, or `AGENTS.md` for Codex); it enforces the core rules in every session and directs the agent to load the full skill in the situations that need it:
+**Required companion setup for implicit use** (Claude Code shortcut: `/plugin install ground-rules@mdorf-agent-skills` installs the [ground-rules](../../ground-rules/) companion plugin, which injects these rules automatically; the manual paste below is for Codex/AGENTS.md users or anyone preferring hand-managed instructions)**:** this skill is meant to run implicitly, and a skill only influences behavior once it loads. The impulsive moment it targets is exactly when an agent won't reach for it, so relying on the trigger description alone leaves it unloaded when it matters most. Paste the following into your always-loaded instructions file (global `~/.claude/CLAUDE.md`, or `AGENTS.md` for Codex); it enforces the core rules in every session and directs the agent to load the full skill in the situations that need it:
 
 ```markdown
 # Working discipline
