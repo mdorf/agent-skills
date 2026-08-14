@@ -37,7 +37,7 @@ recorded here.
 
 1. Write preamble + handoff to `~/.claude/respawn-pending.md` (overwrite if present).
 2. Print the full handoff inline in the reply so the user can review it while this agent can still amend it.
-3. End the reply with exactly this instruction as its own line: "Stash armed. Run /clear now; the next session resumes automatically."
+3. End the reply with exactly this instruction, bolded, as its own final paragraph so it cannot be missed: "**Stash armed → run `/clear` now.** (The next session resumes automatically. Don't start any other session in between; the next session to start consumes the stash.)"
 
 ## Requirements and fallback
 
