@@ -24,7 +24,22 @@ Two modes:
 
 The agent stops, states what is known and what the failed attempts rule out, runs the cheapest diagnostic that measures the actual behavior, and comes back with one grounded proposal.
 
-**Recommended companion setup:** a cross-cutting discipline only works when loaded, and the impulsive moment is exactly when an agent won't reach for it. Add a two-line distillation to your always-loaded instructions file (global `CLAUDE.md` / `AGENTS.md`) pointing at this skill: verify the mechanism before proposing, and stop after two failed fixes. The skill then carries the full discipline when it matters.
+**Required companion setup for implicit use:** this skill is meant to run implicitly, and a skill only influences behavior once it loads. The impulsive moment it targets is exactly when an agent won't reach for it, so relying on the trigger description alone leaves it unloaded when it matters most. Paste the following into your always-loaded instructions file (global `~/.claude/CLAUDE.md`, or `AGENTS.md` for Codex); it enforces the core rules in every session and directs the agent to load the full skill in the situations that need it:
+
+```markdown
+# Working discipline
+
+- Verify the mechanism before proposing: read where the value or code path is
+  actually consumed, or run the cheap probe, BEFORE voicing a recommendation.
+  Label unverified ideas as unverified; never present them as recommendations.
+- If two consecutive fixes have failed, stop tweaking: state what is known and
+  ruled out, run the cheapest diagnostic that measures the actual behavior,
+  establish scope ("where does this NOT happen?"), then propose one grounded
+  solution. Load the step-back skill whenever diagnosing, debugging, or
+  proposing config changes.
+```
+
+Without these lines, treat the skill as manual-only: invoke `/step-back` yourself when you see thrashing.
 
 ## What it encodes
 

@@ -12,7 +12,23 @@ Four related failures, all from real sessions: a one-line question gets seven pa
 
 ## Usage
 
-Loaded at discrete moments, not continuously: reporting the results of an investigation or review, reporting completed work, answering a yes/no, carrying a decision the user must act on, or recovering after a verbosity complaint. An earlier version triggered on "composing any reply." Across 32 turns of one real session it fired zero times, including every turn where a reply ran long, though its recorded usage shows it did fire in other sessions. So the failure was unreliability, not silence: a trigger naming something continuous gives the matcher no particular moment to act on, and the moments it most needs to catch are exactly the ones it missed. Pair the skill with an explicit load directive plus the always-on floor in your global CLAUDE.md / AGENTS.md (answer first, asks up front, plain words); the skill carries the register, the deletion list, and the proportionality ladder, which are worth loading when a reply is about to run long. Invoke `/brevity` directly when a session has drifted wordy.
+Loaded at discrete moments, not continuously: reporting the results of an investigation or review, reporting completed work, answering a yes/no, carrying a decision the user must act on, or recovering after a verbosity complaint. An earlier version triggered on "composing any reply." Across 32 turns of one real session it fired zero times, including every turn where a reply ran long, though its recorded usage shows it did fire in other sessions. So the failure was unreliability, not silence: a trigger naming something continuous gives the matcher no particular moment to act on, and the moments it most needs to catch are exactly the ones it missed.
+
+**Required companion setup for implicit use:** because of that unreliability, this skill is meant to be paired with always-loaded instructions. Paste the following into your global `~/.claude/CLAUDE.md` (or `AGENTS.md` for Codex); it keeps the floor rules active in every session and directs the agent to load the full skill (register, deletion list, proportionality ladder) at the moments that drift:
+
+```markdown
+# Reply style
+
+- Answer first, then support. Length proportional to what the reply must
+  accomplish: a confirmation gets the outcome plus anything that contradicts
+  what was promised; a narrow question gets a few sentences. Cut words, never
+  content or candor.
+- Anything needing my decision or answer goes first or stands alone, never
+  buried at the end; at most one open question per reply. Load the brevity
+  skill before reporting results, confirming work, or answering a yes/no.
+```
+
+Without these lines, treat the skill as manual-only: invoke `/brevity` when a session has drifted wordy.
 
 ## What it encodes
 
