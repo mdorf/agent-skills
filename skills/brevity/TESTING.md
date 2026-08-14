@@ -62,4 +62,6 @@ Scenarios 2-4 re-ran after that change, each in an isolated agent given the skil
 
 This change is not scoreable by scenarios 1-5, all of which hand the skill text to the model directly and therefore cannot measure whether it loads on its own. The measurement that matters is the invocation count in a fresh session against a comparable workload.
 
+**Trigger measurement (2026-08-14, via the ground-rules companion):** a fresh session with the ground-rules plugin installed (its hook injects the load directive) was asked an unhinted yes/no question. It invoked brevity unprompted and replied compliantly (answer first, ~40 words, one file:line reference). This measures the companion-assisted path, not the bare description trigger; the bare-trigger firing rate remains unmeasured.
+
 **Not changed, on purpose.** Several failures in the same measurement mapped to rules that already existed: a 353-word answer to a yes/no ("a narrow question gets a few sentences"), and paragraphs of unrequested extras ("a risky or extra suggestion is one sentence plus an offer to expand"). Those are compliance failures, not specification gaps. Restating them would add redundancy without adding coverage.
