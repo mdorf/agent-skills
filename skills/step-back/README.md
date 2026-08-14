@@ -35,8 +35,9 @@ The agent stops, states what is known and what the failed attempts rule out, run
 - If two consecutive fixes have failed, stop tweaking: state what is known and
   ruled out, run the cheapest diagnostic that measures the actual behavior,
   establish scope ("where does this NOT happen?"), then propose one grounded
-  solution. Load the step-back skill whenever diagnosing, debugging, or
-  proposing config changes.
+  solution.
+- Load the step-back skill whenever diagnosing, debugging, or proposing
+  config changes.
 ```
 
 Without these lines, treat the skill as manual-only: invoke `/step-back` yourself when you see thrashing.

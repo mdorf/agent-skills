@@ -24,8 +24,9 @@ Loaded at discrete moments, not continuously: reporting the results of an invest
   what was promised; a narrow question gets a few sentences. Cut words, never
   content or candor.
 - Anything needing my decision or answer goes first or stands alone, never
-  buried at the end; at most one open question per reply. Load the brevity
-  skill before reporting results, confirming work, or answering a yes/no.
+  buried at the end; at most one open question per reply.
+- Load the brevity skill before reporting results, confirming work, or
+  answering a yes/no.
 ```
 
 Without these lines, treat the skill as manual-only: invoke `/brevity` when a session has drifted wordy.
