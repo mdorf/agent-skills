@@ -1,6 +1,6 @@
 {
   "name": "agent-skills",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Portable Agent Skills (SKILL.md) for Claude Code, OpenAI Codex, and other AI coding agents",
   "author": {
     "name": "Michael Dorf"
