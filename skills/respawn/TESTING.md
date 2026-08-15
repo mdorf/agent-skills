@@ -63,7 +63,7 @@ First live run of the no-hook degradation, in OpenAI Codex: the agent stated upf
 
 It also exposed a cross-tool footgun: a manual resume reads the stash without consuming it, so the still-fresh file remained armed for any fresh Claude session on the same machine (60-minute window). Fixed in the preamble: a reader who gets the stash via the manual fallback is instructed to move it to respawn-last.md before resuming. Not yet re-verified live on the Codex side.
 
-Second finding from the same run: Codex has no `/clear` command (no autocomplete; typing it lands as a plain message, which the Codex agent handled gracefully at runtime by repeating the manual resume line). The fallback previously kept the Claude-specific "run /clear now" closing instruction; the spec now replaces it with a harness-neutral "start a fresh session (new chat or task)" instruction in no-hook harnesses.
+Second finding from the same run: the Codex surface under test (IDE/app) has no `/clear` command (no autocomplete; typing it lands as a plain message, which the Codex agent handled gracefully at runtime by repeating the manual resume line). Verified against the official slash-command reference the same day: `/clear` ("Clear the terminal and start a fresh chat") exists in the Codex CLI only; the docs state the CLI command set does not apply to the web/IDE surfaces. The fallback previously kept the Claude-specific "run /clear now" closing instruction; the spec now replaces it with a harness-neutral "start a fresh session (new chat or task)" instruction that is correct on every Codex surface.
 
 ## Known limitations (by design, documented in README)
 
