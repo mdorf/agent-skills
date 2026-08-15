@@ -66,6 +66,7 @@ One script serves both events: SessionStart is display-only (it announces a pend
 - The hook injects at the **first prompt of the first fresh session** on the machine within 60 minutes. Run `/clear` and type there promptly after `/respawn`; prompting a different fresh session (a new window, a headless run) in between would consume the stash instead. Ongoing sessions and unattended session starts cannot.
 - The hook runs on every prompt submission; when no stash is pending it exits after a single file-existence check.
 - The "Respawn handoff pending" notice (a display-only SessionStart branch) cannot appear at `/clear` time in the desktop app, because the app creates the post-clear session lazily, at your first message; until then no hook can run, so the screen stays blank. Verified from a live transcript: the SessionStart notice, the prompt, and the injection all carry the same timestamp. The notice only helps in harnesses that start sessions eagerly.
+- In the Claude desktop app, `/clear` also resets a custom session title; the app re-auto-titles from the first post-clear message. The skill cannot preserve it: the app's session-management tools refuse to act on the caller's own session, so the resumed agent can neither read nor restore the name. Rename the session manually afterward (or ask any other Claude window to do it) if the title matters.
 - Codex has no hook mechanism: there the skill degrades to writing the stash and telling you to open your fresh session with "read ~/.claude/respawn-pending.md and continue".
 
 ## Tested, not just written

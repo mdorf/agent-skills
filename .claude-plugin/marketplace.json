@@ -6,19 +6,19 @@
   },
   "metadata": {
     "description": "Portable Agent Skills (SKILL.md) for Claude Code, OpenAI Codex, and other AI coding agents",
-    "version": "0.8.3"
+    "version": "0.8.4"
   },
   "plugins": [
     {
       "name": "agent-skills",
       "source": "./",
-      "version": "0.8.3",
+      "version": "0.8.4",
       "description": "Portable Agent Skills (SKILL.md) for Claude Code, OpenAI Codex, and other AI coding agents"
     },
     {
       "name": "ground-rules",
       "source": "./ground-rules",
-      "version": "0.8.3",
+      "version": "0.8.4",
       "description": "Opt-in always-on companion: injects the step-back and brevity baseline rules into every session via a SessionStart hook"
     }
   ]
