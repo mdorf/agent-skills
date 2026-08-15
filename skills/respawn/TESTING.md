@@ -57,6 +57,12 @@ Evaluated exhaustively after a user request; do not revisit without evidence the
 
 The blank screen between /clear and the first message is final in the desktop app.
 
+## 0.8.13 confirmation run (2026-08-14)
+
+Full end-to-end suite re-run headlessly against the installed 0.8.13 plugin, twice: once with a described-only (fictional) payload and once against a real scaffolded repo with the described bug actually present. Both passed every criterion: stash with current preamble (including the manual-fallback move instruction) and all six sections; current closing line; amendment turn rewrote the stash and re-armed; cold session B on "continue" was injected, opened with "Resumed from respawn.", and consumed the stash. In the real-repo run the resumed agent verified the failing specs, applied the approved fix, got 5/5 green, and stopped at the next unscoped decision. In the fictional run it grounded the handoff, found the repo nonexistent, and asked instead of fabricating (correct step-back composition).
+
+Measurement gotcha for future runs: `claude -p` prints only the turn's final message, so the required opener is often invisible in stdout when the agent does work after it. Judge the opener from the transcript's first assistant text block (`~/.claude/projects/<dir>/<session>.jsonl`), not from `-p` output.
+
 ## Codex fallback field test (2026-08-14)
 
 First live run of the no-hook degradation, in OpenAI Codex: the agent stated upfront that Codex cannot inject automatically, wrote the stash to the shared path, printed the full six-section handoff, and adapted the closing instruction to append the manual resume line ("read ~/.claude/respawn-pending.md and continue" after the clear). Pass.
