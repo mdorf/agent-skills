@@ -47,6 +47,16 @@ Redesign: the hook moved to `UserPromptSubmit` (proof a human is typing) with a 
 
 **Observed (2026-08-14, after redesign):** end-to-end steps 3 and 4 re-verified against the real harness with a planted marker stash. A fresh headless session echoed the marker from the injected context and consumed the stash; a resumed ongoing session (step 4) answered normally and left a planted stash untouched. Step 2 (the skill-side handoff composition) was unchanged by the redesign except the closing-instruction wording and was not re-run.
 
+## Dead end: any display at /clear time in the desktop app (2026-08-14)
+
+Evaluated exhaustively after a user request; do not revisit without evidence the app changed. Three channels, all closed:
+
+1. The new session's SessionStart: cannot run, the session doesn't exist until the first prompt (transcript-verified; see the lazy-session note above).
+2. A truthful "injected" confirmation: impossible in principle at /clear, injection happens at the first prompt, so nothing has succeeded yet.
+3. The old session's SessionEnd: probed live with a temporary hook (log every firing; on reason "clear", print to stderr and exit 2, the one SessionEnd channel the docs say is user-visible). Result: the desktop app fires SessionEnd with reason "other", not "clear", and rendered nothing; the user saw a blank window while the log confirmed the hook had run. Both the detection and the display half fail.
+
+The blank screen between /clear and the first message is final in the desktop app.
+
 ## Known limitations (by design, documented in README)
 
 - `/clear` cannot be automated; the flow is two keystrokes.
