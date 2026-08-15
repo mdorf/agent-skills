@@ -11,8 +11,8 @@ Long sessions hit the context ceiling mid-task. Auto-compaction summarizes on th
 ## How it works
 
 1. `/respawn`: the agent writes a thorough handoff (state, open items, next step, references, suggested skills) to `~/.claude/respawn-pending.md` and prints it inline for review. This is the moment to say "add X" while the old agent still has full context.
-2. `/clear`: you clear the window. A notice appears immediately: "Respawn handoff pending: your first message in this fresh session will consume and resume it."
-3. Your next message can be one word. A UserPromptSubmit hook sees the fresh stash, injects it right there, and consumes it (a visible confirmation is shown; a recovery copy stays at `~/.claude/respawn-last.md`). The new agent opens with "Resumed from respawn." plus a short done/open summary.
+2. `/clear`: you clear the window. In the desktop app the window simply goes blank; that's normal (see the limitation below).
+3. Your next message can be one word. A UserPromptSubmit hook sees the fresh stash, injects it right there, and consumes it. A visible confirmation is shown ("Respawn handoff injected into this session"; a recovery copy stays at `~/.claude/respawn-last.md`), and the new agent opens with "Resumed from respawn." plus a short done/open summary.
 
 Two guards keep the stash from going to the wrong place. Injection happens at a user prompt, not at session start, so sessions nobody is typing in (app-relaunch warm sessions, background utility sessions) can never consume it. And only a *fresh* session (no assistant turns in its transcript yet) qualifies, so typing in an ongoing conversation in another window leaves the stash alone. Stashes older than 60 minutes are archived without injecting, so a forgotten `/respawn` never contaminates an unrelated later session.
 
@@ -65,6 +65,7 @@ One script serves both events: SessionStart is display-only (it announces a pend
 - The agent cannot run `/clear` for you; that keystroke is yours. Two commands total, not one.
 - The hook injects at the **first prompt of the first fresh session** on the machine within 60 minutes. Run `/clear` and type there promptly after `/respawn`; prompting a different fresh session (a new window, a headless run) in between would consume the stash instead. Ongoing sessions and unattended session starts cannot.
 - The hook runs on every prompt submission; when no stash is pending it exits after a single file-existence check.
+- The "Respawn handoff pending" notice (a display-only SessionStart branch) cannot appear at `/clear` time in the desktop app, because the app creates the post-clear session lazily, at your first message; until then no hook can run, so the screen stays blank. Verified from a live transcript: the SessionStart notice, the prompt, and the injection all carry the same timestamp. The notice only helps in harnesses that start sessions eagerly.
 - Codex has no hook mechanism: there the skill degrades to writing the stash and telling you to open your fresh session with "read ~/.claude/respawn-pending.md and continue".
 
 ## Tested, not just written

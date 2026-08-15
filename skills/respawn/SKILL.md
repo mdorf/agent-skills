@@ -5,7 +5,7 @@ description: Use when the user invokes /respawn, or asks to hand this session of
 
 # Respawn
 
-Hand this session off to a fresh agent in the same window. Two moves: write a complete handoff to a stash file that the next session ingests automatically, and show it to the user for review. The user then runs `/clear`; a display-only SessionStart hook immediately shows a "handoff pending" notice, and a UserPromptSubmit hook injects the stash at the first prompt of the fresh session (sessions that start with nobody typing, like app-relaunch warm sessions, cannot consume it, and ongoing conversations in other windows are skipped).
+Hand this session off to a fresh agent in the same window. Two moves: write a complete handoff to a stash file that the next session ingests automatically, and show it to the user for review. The user then runs `/clear`; a UserPromptSubmit hook injects the stash at the first prompt of the fresh session, with a visible confirmation (sessions that start with nobody typing, like app-relaunch warm sessions, cannot consume it, and ongoing conversations in other windows are skipped).
 
 ## Step 1: Compose the handoff
 

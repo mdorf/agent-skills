@@ -25,6 +25,8 @@ After the handoff is shown, a user may request changes ("expand item 2 to includ
 
 **Observed (2026-08-14, after adding the display-only SessionStart branch):** all branches re-verified by pipe-test, including both SessionStart cases; the live fresh-headless injection test was re-run and passed (marker echoed, stash consumed, visible confirmation emitted alongside the context). The systemMessage rendering itself is standard harness behavior and was not separately verified in a live window.
 
+**Observed (2026-08-14, first interactive desktop run):** full pass on the flow itself, including an unprompted live exercise of the amendment loop and the "Resumed from respawn." resume. One expectation corrected: the desktop app creates the post-clear session lazily, at the first submitted message, so the SessionStart "pending" notice fired simultaneously with the prompt and the injection (all three share one transcript timestamp) and was not rendered by the UI. A pending notice at `/clear` time is unachievable in the desktop app; the screen staying blank until the first message is normal there. The branch is kept for eager-session harnesses and documented as such in the README.
+
 ## End to end
 
 1. Clean state: no `respawn-pending.md` / `respawn-last.md` in `~/.claude/`.
