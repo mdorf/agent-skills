@@ -57,6 +57,12 @@ Evaluated exhaustively after a user request; do not revisit without evidence the
 
 The blank screen between /clear and the first message is final in the desktop app.
 
+## Codex fallback field test (2026-08-14)
+
+First live run of the no-hook degradation, in OpenAI Codex: the agent stated upfront that Codex cannot inject automatically, wrote the stash to the shared path, printed the full six-section handoff, and adapted the closing instruction to append the manual resume line ("read ~/.claude/respawn-pending.md and continue" after the clear). Pass.
+
+It also exposed a cross-tool footgun: a manual resume reads the stash without consuming it, so the still-fresh file remained armed for any fresh Claude session on the same machine (60-minute window). Fixed in the preamble: a reader who gets the stash via the manual fallback is instructed to move it to respawn-last.md before resuming. Not yet re-verified live on the Codex side.
+
 ## Known limitations (by design, documented in README)
 
 - `/clear` cannot be automated; the flow is two keystrokes.

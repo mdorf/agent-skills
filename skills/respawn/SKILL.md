@@ -26,11 +26,14 @@ The stash must open with instructions to the NEXT agent, above the handoff body:
 
 ```
 You are resuming a session via /respawn. The previous agent in this window
-wrote the handoff below, then the user cleared the context. Open your first
-reply with "Resumed from respawn." followed by one or two short paragraphs:
-what was already done, and what remains open. Then continue the work; the
-handoff's "Next step" is your starting point. Do not re-litigate decisions
-recorded here.
+wrote the handoff below, then the user cleared the context. If you are
+reading this directly from ~/.claude/respawn-pending.md (manual fallback,
+no automatic injection), first move that file to ~/.claude/respawn-last.md
+so it cannot leak into an unrelated session. Open your first reply with
+"Resumed from respawn." followed by one or two short paragraphs: what was
+already done, and what remains open. Then continue the work; the handoff's
+"Next step" is your starting point. Do not re-litigate decisions recorded
+here.
 ```
 
 ## Step 3: Stash, show, arm
