@@ -12,7 +12,7 @@ Each skill is a self-contained folder under [`skills/`](skills/) with a `SKILL.m
 | [solve](skills/solve/) | Resolves an issue/ticket with discipline: validates the premise against current code, weighs the proposed fix against alternatives, and stops for review before writing the fix |
 | [step-back](skills/step-back/)† | Grounding discipline: verify a suggestion's mechanism before voicing it, treat negative search results as unproven, establish scope before remedy, and stop the tweak-upon-tweak loop after failed fixes |
 | [brevity](skills/brevity/)† | Replies that land: answer first, length proportional to what the reply must accomplish, plain register, asks never buried, and no substance lost to shortening |
-| [respawn](skills/respawn/) | Same-window session handoff: /respawn writes a reviewable handoff stash, /clear resets, and a SessionStart hook injects the stash so the fresh agent resumes in the know |
+| [respawn](skills/respawn/) | Same-window session handoff: /respawn writes a reviewable handoff stash, /clear resets, and a UserPromptSubmit hook injects the stash at your first message so the fresh agent resumes in the know. Two small manual steps remain by desktop-app design: the first post-clear message must be typed (nothing can run in a session that hasn't started), and a custom session title is reset by /clear and must be renamed back by hand |
 
 † Meant to run implicitly, which needs always-on companion rules. Claude Code users: install the [ground-rules](ground-rules/) companion plugin (one command, below). Codex or manual users: paste the snippet from the skill's README into your global CLAUDE.md / AGENTS.md. Without either, these two work as manual commands (/step-back, /brevity) only.
 
