@@ -45,4 +45,4 @@ here.
 
 ## Requirements and fallback
 
-Automatic injection requires the UserPromptSubmit hook shipped with this skill (see README). If the hook is not installed, or this harness has no hook support (e.g. Codex), say so and fall back: keep the stash file and tell the user to start their fresh session with "read ~/.claude/respawn-pending.md and continue". Never skip writing the stash; the inline copy disappears when the user clears the window.
+Automatic injection requires the UserPromptSubmit hook shipped with this skill (see README). If the hook is not installed, or this harness has no hook support (e.g. Codex), say so and fall back: keep the stash file, and replace the closing instruction from step 3 with this harness-neutral one (do not mention `/clear`; Codex has no such command): "**Stash written → start a fresh session (new chat or task) and open it with: `read ~/.claude/respawn-pending.md and continue`**". Never skip writing the stash; the inline copy disappears when the user resets the window.
