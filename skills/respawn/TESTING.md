@@ -17,6 +17,12 @@ Pipe-test `hooks/respawn-inject.sh` with a scratch `$HOME` (the script reads hoo
 
 **Observed (2026-08-14, after the UserPromptSubmit redesign):** all six consumption branches verified by pipe-test. One harness gotcha: validate the emitted JSON with `printf '%s'`, not zsh's `echo`, which expands the `\n` escapes inside the JSON string and makes valid output look broken.
 
+## Amendment loop
+
+After the handoff is shown, a user may request changes ("expand item 2 to include Rachel's comments") before clearing. Pass criteria: the agent applies the change, rewrites the stash file (not just the reply), reprints the amended handoff, and re-ends with the bolded closing instruction.
+
+**Observed (2026-08-14):** verified live against the real harness. A headless session composed a handoff from a described mid-task state, then a resumed second turn asked to fold in two reviewer requirements; the on-disk stash was rewritten containing both, the preamble stayed intact above the body, and the reply re-armed with the closing paragraph.
+
 **Observed (2026-08-14, after adding the display-only SessionStart branch):** all branches re-verified by pipe-test, including both SessionStart cases; the live fresh-headless injection test was re-run and passed (marker echoed, stash consumed, visible confirmation emitted alongside the context). The systemMessage rendering itself is standard harness behavior and was not separately verified in a live window.
 
 ## End to end

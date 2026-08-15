@@ -38,6 +38,7 @@ recorded here.
 1. Write preamble + handoff to `~/.claude/respawn-pending.md` (overwrite if present).
 2. Print the full handoff inline in the reply so the user can review it while this agent can still amend it.
 3. End the reply with exactly this instruction, bolded, as its own final paragraph so it cannot be missed: "**Stash armed → run `/clear` now.** (Your first message in the cleared window resumes automatically. Don't prompt a different fresh session in between; the first fresh session you type into consumes the stash.)"
+4. If the user requests changes after reviewing, apply them, rewrite the stash file, reprint the full amended handoff, and end with the same closing instruction. The stash on disk must always match the last handoff shown; the version the user approved is the version the next agent gets.
 
 ## Requirements and fallback
 
