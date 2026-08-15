@@ -5,7 +5,7 @@ description: Use when the user invokes /respawn, or asks to hand this session of
 
 # Respawn
 
-Hand this session off to a fresh agent in the same window. Two moves: write a complete handoff to a stash file that the next session ingests automatically, and show it to the user for review. The user then runs `/clear`; a SessionStart hook injects the stash into the new context.
+Hand this session off to a fresh agent in the same window. Two moves: write a complete handoff to a stash file that the next session ingests automatically, and show it to the user for review. The user then runs `/clear`; a UserPromptSubmit hook injects the stash at the first prompt of the fresh session (sessions that start with nobody typing, like app-relaunch warm sessions, cannot consume it, and ongoing conversations in other windows are skipped).
 
 ## Step 1: Compose the handoff
 
@@ -37,8 +37,8 @@ recorded here.
 
 1. Write preamble + handoff to `~/.claude/respawn-pending.md` (overwrite if present).
 2. Print the full handoff inline in the reply so the user can review it while this agent can still amend it.
-3. End the reply with exactly this instruction, bolded, as its own final paragraph so it cannot be missed: "**Stash armed → run `/clear` now.** (The next session resumes automatically. Don't start any other session in between; the next session to start consumes the stash.)"
+3. End the reply with exactly this instruction, bolded, as its own final paragraph so it cannot be missed: "**Stash armed → run `/clear` now.** (Your first message in the cleared window resumes automatically. Don't prompt a different fresh session in between; the first fresh session you type into consumes the stash.)"
 
 ## Requirements and fallback
 
-Automatic injection requires the SessionStart hook shipped with this skill (see README). If the hook is not installed, or this harness has no hook support (e.g. Codex), say so and fall back: keep the stash file and tell the user to start their fresh session with "read ~/.claude/respawn-pending.md and continue". Never skip writing the stash; the inline copy disappears when the user clears the window.
+Automatic injection requires the UserPromptSubmit hook shipped with this skill (see README). If the hook is not installed, or this harness has no hook support (e.g. Codex), say so and fall back: keep the stash file and tell the user to start their fresh session with "read ~/.claude/respawn-pending.md and continue". Never skip writing the stash; the inline copy disappears when the user clears the window.

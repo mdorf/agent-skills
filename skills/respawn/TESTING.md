@@ -4,13 +4,16 @@ Unlike this repo's other skills, respawn's critical path is mechanical (stash fi
 
 ## Unit: hook script
 
-Pipe-test `hooks/respawn-inject.sh` directly (it ignores stdin):
+Pipe-test `hooks/respawn-inject.sh` with a scratch `$HOME` (the script reads hook-input JSON from stdin; fabricate transcripts as JSONL files):
 
-- Fresh stash present: emits `hookSpecificOutput.additionalContext` JSON containing the stash content; moves the stash to `~/.claude/respawn-last.md`; exit 0.
-- No stash: silent, exit 0.
-- Stash older than 60 minutes: archived without injecting, exit 0 (set the file's mtime back with `touch -t` to test).
+- No stash: silent, exit 0 (the every-prompt fast path).
+- Fresh stash, fresh transcript (no `"type":"assistant"` lines): emits `hookSpecificOutput.additionalContext` JSON containing the stash content; moves the stash to `~/.claude/respawn-last.md`; exit 0.
+- Fresh stash, ongoing transcript (has an assistant line): silent, **stash left in place**.
+- Fresh stash, no `transcript_path` in input (brand-new session, no transcript file yet): injects and consumes.
+- Stash older than 60 minutes: archived without injecting, from any session (set the mtime back with `touch -t`).
+- Malformed stdin: silent, stash preserved.
 
-**Observed (2026-08-14):** first two branches verified by pipe-test; the stale branch verified by code review only.
+**Observed (2026-08-14, after the UserPromptSubmit redesign):** all six branches verified by pipe-test. One harness gotcha: validate the emitted JSON with `printf '%s'`, not zsh's `echo`, which expands the `\n` escapes inside the JSON string and makes valid output look broken.
 
 ## End to end
 
@@ -19,13 +22,22 @@ Pipe-test `hooks/respawn-inject.sh` directly (it ignores stdin):
    - **Pass criteria:** stash written with the resume preamble above the handoff body; handoff contains task/state/open-items/next-step/references/suggested-skills; full handoff printed inline; reply ends with the bolded "**Stash armed → run `/clear` now.**" paragraph.
 3. Session B (headless, fresh, prompt is just "continue"):
    - **Pass criteria:** first words are "Resumed from respawn."; one or two short paragraphs summarizing done and open items; the agent proceeds from the handoff's next step; stash consumed; `respawn-last.md` present.
+4. Session C (resume session B with a second prompt while a fresh stash is planted):
+   - **Pass criteria:** the ongoing session does not consume the stash; `respawn-pending.md` still present afterward.
 
-**Formatting change (2026-08-14, after the first interactive run):** the closing instruction was made bold with an explicit arrow and a do-not-start-other-sessions warning, at user request (the plain last line was too easy to miss). Live re-verification was deferred until the then-armed stash was consumed, since any test session would have eaten it; re-run session A of the end-to-end test at next opportunity.
+**Observed (2026-08-14, original SessionStart design):** session A and B criteria all passed. Session A produced a structured handoff including prioritized open items and suggested skills (it recommended `solve` for the bug, unprompted). Session B opened with the required acknowledgment, checked the handoff against the actual repository, found the fictional test payload contradicted reality, and refused to fabricate work on nonexistent files. That grounding comes from the user's step-back discipline, not this skill, but it demonstrates the intended composition.
 
-**Observed (2026-08-14):** all criteria passed. Session A produced a structured handoff including prioritized open items and suggested skills (it recommended `solve` for the bug, unprompted). Session B opened with the required acknowledgment and summary, then went beyond the criteria: it checked the handoff against the actual repository, found the fictional test payload contradicted reality (no such gem exists in the cwd), refused to fabricate work on nonexistent files, and asked for direction. That behavior comes from the user's step-back discipline (always loaded via CLAUDE.md), not from this skill, but it demonstrates the intended composition: a respawned agent grounds the handoff instead of blindly executing it.
+## Field failure and redesign (2026-08-14)
+
+The first real (non-test) use of the flow failed. The previous session wrote the stash at 16:59:07 and the user restarted the desktop app (a pending plugin update needed it). The app relaunch fired a SessionStart nobody was looking at, and the hook, then wired to `SessionStart` with matcher `clear|startup`, consumed the stash at 16:59:59 and injected the handoff into a transient session that never persisted a transcript. The user's actual window started at 17:00:08 and got nothing. Root cause: **SessionStart fires for sessions with no human present**, so "next session to start" was the wrong consumption trigger. The `respawn-last.md` recovery copy worked; the resumed agent reconstructed context from it.
+
+Redesign: the hook moved to `UserPromptSubmit` (proof a human is typing) with a freshness guard (only sessions whose transcript has no assistant turns yet may consume; ongoing conversations in other windows skip). Along the way a latent bug was found and fixed: the script fed its python program through a stdin heredoc, which swallowed the hook-input JSON, so nothing downstream of `json.load(sys.stdin)` could ever have worked.
+
+**Observed (2026-08-14, after redesign):** end-to-end steps 3 and 4 re-verified against the real harness with a planted marker stash. A fresh headless session echoed the marker from the injected context and consumed the stash; a resumed ongoing session (step 4) answered normally and left a planted stash untouched. Step 2 (the skill-side handoff composition) was unchanged by the redesign except the closing-instruction wording and was not re-run.
 
 ## Known limitations (by design, documented in README)
 
 - `/clear` cannot be automated; the flow is two keystrokes.
-- The stash is consumed by the next session started on the machine within 60 minutes, whichever window it is. Run `/clear` promptly.
+- The stash is consumed by the first prompt of the first *fresh* session on the machine within 60 minutes, whichever window it is. Run `/clear` and type there promptly; don't prompt a different new window or start a headless run in between.
+- The hook runs on every prompt submission (one file-existence check when idle).
 - No hook support in Codex; the skill falls back to telling the user to point the fresh session at the stash file.

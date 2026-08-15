@@ -1,28 +1,69 @@
 #!/usr/bin/env bash
-# SessionStart hook (matchers: clear|startup): inject a pending /respawn
-# handoff stash into the new session's context, consume-once.
+# UserPromptSubmit hook: inject a pending /respawn handoff stash at the first
+# user prompt of a fresh session, consume-once.
+#
+# Why UserPromptSubmit and not SessionStart: SessionStart fires for sessions
+# nobody is looking at (app relaunch warm sessions, background utility
+# sessions), and one of those can silently eat the stash. A UserPromptSubmit
+# event is proof a human is typing in that session. The freshness check below
+# additionally keeps ongoing conversations in other windows from consuming a
+# stash meant for a cleared one.
 set -u
 STASH="$HOME/.claude/respawn-pending.md"
 LAST="$HOME/.claude/respawn-last.md"
+
+# Fast path: this hook runs on every prompt; one stat and out when idle.
 [ -f "$STASH" ] || exit 0
 
-now=$(date +%s)
-mtime=$(stat -f %m "$STASH" 2>/dev/null || stat -c %Y "$STASH" 2>/dev/null) || exit 0
-age=$(( now - mtime ))
+# The program is passed via -c, not a stdin heredoc: the hook's stdin must
+# stay untouched so python can read the hook input JSON from it.
+PROG=$(cat << 'PY'
+import json, os, sys, time
 
-# Consume the stash either way so a stale one never lingers; keep a recovery copy.
-mv "$STASH" "$LAST"
+stash, last = sys.argv[1], sys.argv[2]
 
-# Older than 60 minutes: treat as stale, archive without injecting.
-[ "$age" -gt 3600 ] && exit 0
+try:
+    mtime = os.stat(stash).st_mtime
+except FileNotFoundError:
+    sys.exit(0)  # raced with another session's consume
 
-python3 - "$LAST" << 'PY'
-import json, sys
-content = open(sys.argv[1]).read()
+# Older than 60 minutes: stale. Archive without injecting, from any session,
+# so a forgotten /respawn never contaminates an unrelated later session.
+if time.time() - mtime > 3600:
+    os.replace(stash, last)
+    sys.exit(0)
+
+# Only a fresh session may consume the stash. "Fresh" means its transcript has
+# no assistant turns yet: true right after /clear or at the first prompt of a
+# new window, false for every ongoing conversation. A non-fresh session leaves
+# the stash in place for the session it was meant for.
+try:
+    hook_input = json.load(sys.stdin)
+except Exception:
+    sys.exit(0)
+transcript = hook_input.get("transcript_path") or ""
+if transcript and os.path.exists(transcript):
+    with open(transcript, errors="replace") as f:
+        for line in f:
+            try:
+                if json.loads(line).get("type") == "assistant":
+                    sys.exit(0)
+            except Exception:
+                continue
+
+# Consume first (atomic rename), then read from the recovery copy, so two
+# fresh sessions racing on the same stash cannot both inject it.
+try:
+    os.replace(stash, last)
+except FileNotFoundError:
+    sys.exit(0)
+content = open(last, errors="replace").read()
 print(json.dumps({
     "hookSpecificOutput": {
-        "hookEventName": "SessionStart",
+        "hookEventName": "UserPromptSubmit",
         "additionalContext": content,
     }
 }))
 PY
+)
+python3 -c "$PROG" "$STASH" "$LAST"
