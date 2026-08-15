@@ -11,8 +11,8 @@ Long sessions hit the context ceiling mid-task. Auto-compaction summarizes on th
 ## How it works
 
 1. `/respawn`: the agent writes a thorough handoff (state, open items, next step, references, suggested skills) to `~/.claude/respawn-pending.md` and prints it inline for review. This is the moment to say "add X" while the old agent still has full context.
-2. `/clear`: you clear the window.
-3. Your next message can be one word. A UserPromptSubmit hook sees the fresh stash, injects it right there, and consumes it (a recovery copy stays at `~/.claude/respawn-last.md`). The new agent opens with "Resumed from respawn." plus a short done/open summary.
+2. `/clear`: you clear the window. A notice appears immediately: "Respawn handoff pending: your first message in this fresh session will consume and resume it."
+3. Your next message can be one word. A UserPromptSubmit hook sees the fresh stash, injects it right there, and consumes it (a visible confirmation is shown; a recovery copy stays at `~/.claude/respawn-last.md`). The new agent opens with "Resumed from respawn." plus a short done/open summary.
 
 Two guards keep the stash from going to the wrong place. Injection happens at a user prompt, not at session start, so sessions nobody is typing in (app-relaunch warm sessions, background utility sessions) can never consume it. And only a *fresh* session (no assistant turns in its transcript yet) qualifies, so typing in an ongoing conversation in another window leaves the stash alone. Stashes older than 60 minutes are archived without injecting, so a forgotten `/respawn` never contaminates an unrelated later session.
 
@@ -31,6 +31,18 @@ Then add to `~/.claude/settings.json` (merge with existing keys):
 ```json
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "clear|startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/respawn-inject.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -45,6 +57,8 @@ Then add to `~/.claude/settings.json` (merge with existing keys):
   }
 }
 ```
+
+One script serves both events: SessionStart is display-only (it announces a pending stash and never consumes it), UserPromptSubmit does the injection. The split exists because SessionStart also fires for sessions nobody is typing in, which is how an earlier version of this hook once lost a handoff to an app relaunch.
 
 ## Limitations, stated plainly
 

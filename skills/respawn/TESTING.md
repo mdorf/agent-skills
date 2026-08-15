@@ -12,8 +12,12 @@ Pipe-test `hooks/respawn-inject.sh` with a scratch `$HOME` (the script reads hoo
 - Fresh stash, no `transcript_path` in input (brand-new session, no transcript file yet): injects and consumes.
 - Stash older than 60 minutes: archived without injecting, from any session (set the mtime back with `touch -t`).
 - Malformed stdin: silent, stash preserved.
+- SessionStart event, fresh stash: emits `systemMessage` notice only (no `hookSpecificOutput`), **stash untouched**.
+- SessionStart event, stale stash: silent, stash untouched (cleanup belongs to the prompt path).
 
-**Observed (2026-08-14, after the UserPromptSubmit redesign):** all six branches verified by pipe-test. One harness gotcha: validate the emitted JSON with `printf '%s'`, not zsh's `echo`, which expands the `\n` escapes inside the JSON string and makes valid output look broken.
+**Observed (2026-08-14, after the UserPromptSubmit redesign):** all six consumption branches verified by pipe-test. One harness gotcha: validate the emitted JSON with `printf '%s'`, not zsh's `echo`, which expands the `\n` escapes inside the JSON string and makes valid output look broken.
+
+**Observed (2026-08-14, after adding the display-only SessionStart branch):** all branches re-verified by pipe-test, including both SessionStart cases; the live fresh-headless injection test was re-run and passed (marker echoed, stash consumed, visible confirmation emitted alongside the context). The systemMessage rendering itself is standard harness behavior and was not separately verified in a live window.
 
 ## End to end
 
