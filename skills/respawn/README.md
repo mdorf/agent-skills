@@ -67,7 +67,7 @@ One script serves both events: SessionStart is display-only (it announces a pend
 - The hook runs on every prompt submission; when no stash is pending it exits after a single file-existence check.
 - The "Respawn handoff pending" notice (a display-only SessionStart branch) cannot appear at `/clear` time in the desktop app, because the app creates the post-clear session lazily, at your first message; until then no hook can run, so the screen stays blank. Verified from a live transcript: the SessionStart notice, the prompt, and the injection all carry the same timestamp. The notice only helps in harnesses that start sessions eagerly.
 - In the Claude desktop app, `/clear` also resets a custom session title; the app re-auto-titles from the first post-clear message. The skill cannot preserve it: the app's session-management tools refuse to act on the caller's own session, so the resumed agent can neither read nor restore the name. Rename the session manually afterward (or ask any other Claude window to do it) if the title matters.
-- Codex has no hook mechanism on any surface, so there the skill degrades to writing the stash and telling you to start a fresh session (new chat or task) opened with "read ~/.claude/respawn-pending.md and continue". The stash-reading agent moves the file to `respawn-last.md` itself, since no hook will. (The fallback deliberately avoids naming `/clear`: the Codex CLI has that command, but the Codex IDE/web surfaces do not.)
+- Codex has no hook mechanism, so there the skill degrades to writing the stash and telling you: `/new`, then open the fresh chat with "read ~/.claude/respawn-pending.md and continue". The stash-reading agent moves the file to `respawn-last.md` itself, since no hook will.
 
 ## Tested, not just written
 
